@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "395266718305",
+    "project_id": "kotlin-chat-app-96716",
+    "storage_bucket": "kotlin-chat-app-96716.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395266718305:android:68b76ecf2fb13e069a8820",
+        "android_client_info": {
+          "package_name": "com.doanducdat.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395266718305-tlnd4bk4v8ghonuvbms9ru1i4ruea0kd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doanducdat.chatapp",
+            "certificate_hash": "cee7c0993511794465a0cfed3bcbb0302769be00"
+          }
+        },
+        {
+          "client_id": "395266718305-p0jodimqkke2ofgdl5b37c09o4pt9qhb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXQbIVK2X8oFvNdznDFanWDRCf0LXK2KY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395266718305-p0jodimqkke2ofgdl5b37c09o4pt9qhb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

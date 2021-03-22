@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.doanducdat.chatapp.R
+import com.doanducdat.chatapp.animation.ZoomOutPageTransformer
 import com.doanducdat.chatapp.databinding.ActivityOnBoardingScreenBinding
 import com.doanducdat.chatapp.ui.adapter.ScreenSlidePagerAdapter
 
@@ -21,6 +22,7 @@ class OnBoardingScreenActivity : AppCompatActivity() {
         oBSBinding.viewPager2.adapter = slideAdapter
         oBSBinding.indicator3.setViewPager(oBSBinding.viewPager2)
         setColorIndicator()
+        oBSBinding.viewPager2.setPageTransformer(ZoomOutPageTransformer())
     }
 
     private fun setColorIndicator() {

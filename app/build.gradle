@@ -36,7 +36,7 @@ android {
         dataBinding true
     }
 }
-
+apply plugin: 'com.google.gms.google-services'
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -45,6 +45,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.firebase:firebase-database:19.6.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -57,5 +58,16 @@ dependencies {
     //circle indicator: use combine with viewpager2 in onBoardingScreen
     implementation 'me.relex:circleindicator:2.1.6'
 
+    //firebase
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation platform('com.google.firebase:firebase-bom:26.7.0')
+
+    //navigation component
+    def nav_version = "2.3.3"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    //login(picker phone) - register - verify(press OTP)
+    //CountryCodePicker
+    implementation 'com.hbb20:ccp:2.4.7'
 
 }

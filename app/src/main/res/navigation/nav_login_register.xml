@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_login_register"
+    app:startDestination="@id/loginAndRegisterFragment">
+
+    <fragment
+        android:id="@+id/loginAndRegisterFragment"
+        android:name="com.doanducdat.chatapp.ui.fragment.login.LoginAndRegisterFragment"
+        android:label="fragment_login_and_register"
+        tools:layout="@layout/fragment_login_and_register" >
+        <action
+            android:id="@+id/action_loginAndRegisterFragment_to_verifyNumberFragment"
+            app:destination="@id/verifyNumberFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/verifyNumberFragment"
+        android:name="com.doanducdat.chatapp.ui.fragment.login.VerifyNumberFragment"
+        android:label="fragment_verify_number"
+        tools:layout="@layout/fragment_verify_number" />
+</navigation>
