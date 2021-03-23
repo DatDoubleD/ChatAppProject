@@ -8,5 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="mytext">#FFFFFF</color>
+    <color name="textOftabLoginAndRegister">#FFFFFF</color>
+    <color name="helperTextColor">#FFFFFF</color>
+    <color name="bgColorDialog">#535151</color>
 
 </resources>

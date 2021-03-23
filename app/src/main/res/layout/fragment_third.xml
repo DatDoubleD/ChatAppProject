@@ -27,7 +27,7 @@
             android:id="@+id/btn_get_started"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:background="@drawable/bg_btn_get_started"
+            android:background="@drawable/bg_btn_get_started_two_style"
             android:text="@string/get_started"
             android:textAllCaps="false"
             android:layout_gravity="center"

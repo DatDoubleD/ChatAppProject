@@ -8,4 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="mytext">#090000</color>
+    <color name="colorOfgetstarted">#74c7b8</color>
+    <color name="colorOfgetstartedClick">#96DFD2</color>
+    <color name="textOftabLoginAndRegister">#4E4C4C</color>
+    <color name="helperTextColor">#4E4C4C</color>
+    <color name="bgColorDialog">#CCC9C9</color>
 </resources>

@@ -2,6 +2,7 @@ package com.doanducdat.chatapp.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.fragment.NavHostFragment
 import com.doanducdat.chatapp.R
 
 class LoginActivity : AppCompatActivity() {
@@ -9,4 +10,5 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
     }
+
 }

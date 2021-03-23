@@ -9,6 +9,7 @@ import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.animation.ZoomOutPageTransformer
 import com.doanducdat.chatapp.databinding.ActivityOnBoardingScreenBinding
 import com.doanducdat.chatapp.ui.adapter.ScreenSlidePagerAdapter
+import com.doanducdat.chatapp.utils.CheckCurrentThemeApp
 
 class OnBoardingScreenActivity : AppCompatActivity() {
 
@@ -26,12 +27,8 @@ class OnBoardingScreenActivity : AppCompatActivity() {
     }
 
     private fun setColorIndicator() {
-        val currentNightMode = Configuration.UI_MODE_NIGHT_MASK
-        when (currentNightMode) {
-            Configuration.UI_MODE_NIGHT_NO -> {
-                /*oBSBinding.indicator3.backgr = R.drawable.bg_circle_indicator_black*/
-                oBSBinding.indicator3.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-            }
+        if (CheckCurrentThemeApp.checkCurrentTheme()) {
+            oBSBinding.indicator3.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
         }
     }
 }

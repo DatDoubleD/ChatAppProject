@@ -5,5 +5,10 @@
     <string name="get_started">Get Started</string>
     <string name="login">Login</string>
     <string name="Register">Register</string>
+    <string name="ValidOrUnvalid">Valid Or Unvalid</string>
+    <string name="Phone">Phone</string>
+    <string name="Verify">Verify</string>
 
+    <string name="Name">Name</string>
+    <string name="Password">Password</string>
 </resources>

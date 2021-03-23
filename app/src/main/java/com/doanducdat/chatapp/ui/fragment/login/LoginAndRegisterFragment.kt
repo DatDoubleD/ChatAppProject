@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.doanducdat.chatapp.R
+import com.doanducdat.chatapp.animation.ZoomOutPageTransformer
 import com.doanducdat.chatapp.databinding.FragmentLoginAndRegisterBinding
 import com.doanducdat.chatapp.ui.adapter.LoginAndRegisterAdapter
 import com.google.android.material.tabs.TabLayout
@@ -29,7 +30,7 @@ class LoginAndRegisterFragment : Fragment() {
         //set adapter for viewpager2
         val adapter: LoginAndRegisterAdapter = LoginAndRegisterAdapter(requireActivity())
         binding.viewPager2LoginAndRegister.adapter = adapter
-
+        binding.viewPager2LoginAndRegister.setPageTransformer(ZoomOutPageTransformer())
         //set up tablayout by tabLayoutMediator
         TabLayoutMediator(binding.tabLayoutLoginAndRegister, binding.viewPager2LoginAndRegister)
         { tab, position ->
