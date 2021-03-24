@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp">
-        <activity android:name=".ui.activity.LoginActivity"></activity>
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activity.OnBoardingScreenActivity" />
         <activity android:name=".ui.activity.SplashScreenActivity">
             <intent-filter>

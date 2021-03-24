@@ -58,11 +58,12 @@
             app:startIconDrawable="@drawable/ic_phone">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_edt"
+                android:id="@+id/txt_input_edt_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:maxLength="21"
+                android:singleLine="true"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -90,38 +91,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
+                android:singleLine="true"
                 android:maxLength="31"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_input_layout_password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:hint="@string/Password"
-            android:padding="5dp"
-            android:textColorHint="@color/helperTextColor"
-            app:counterEnabled="true"
-            app:counterMaxLength="30"
-            app:endIconMode="password_toggle"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@drawable/ic_error"
-            app:errorTextColor="@color/mytext"
-            app:helperText="Require*"
-            app:helperTextTextColor="@color/helperTextColor">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_edt_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:maxLength="31"
-                android:maxLines="1" />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_register"

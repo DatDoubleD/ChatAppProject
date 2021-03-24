@@ -20,14 +20,6 @@ class LoadingDialog(var activity: Activity) {
         builder.setCancelable(false)
 
         dialog = builder.create();
-
-/*
-        val layoutParams = WindowManager.LayoutParams()
-        layoutParams.copyFrom(dialog.window!!.attributes)
-        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
-*/
-
         dialog.show()
         dialog.window?.setLayout(200, 250)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

@@ -1,10 +1,12 @@
 package com.doanducdat.chatapp.ui.fragment.login
 
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
@@ -13,6 +15,9 @@ import androidx.navigation.fragment.findNavController
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentRegisterBinding
 import com.doanducdat.chatapp.model.LoadingDialog
+import com.doanducdat.chatapp.model.User
+import com.doanducdat.chatapp.utils.HandlePhone
+import com.doanducdat.chatapp.utils.HandleString
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
@@ -30,13 +35,11 @@ class RegisterFragment : Fragment() {
 
     private val controller by lazy { navHostFragment.findNavController() }
 
-    private val auth: FirebaseAuth by lazy {
-        FirebaseAuth.getInstance()
-    }
-
     private val dialog: LoadingDialog by lazy {
         LoadingDialog(requireActivity())
     }
+
+    private lateinit var userName:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,23 +54,35 @@ class RegisterFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         //combine txtinnputedt with contrycountpicker
-        binding.cppRegister.registerCarrierNumberEditText(binding.txtInputEdt)
+        binding.cppRegister.registerCarrierNumberEditText(binding.txtInputEdtPhone)
         checkLengthNumberPhone()
+        checkLengthName()
         checkValidNumberPhone()
         //
         binding.btnRegister.setOnClickListener {
-            dialog.startLoadingDialog()
-            if (!validPhone) {
-                dialog.stopLoadingDialog()
-                Toast.makeText(requireContext(), "Your Phone is invalid!", Toast.LENGTH_LONG).show()
-            } else {
-                //chưa check xem phone có tồn tại trong database chưa!!!
-                initCallbackToListenOTP()
-                generateOTP()
-            }
+            checkInFoUserToRegister()
         }
-
     }
+
+    private fun checkInFoUserToRegister() {
+        dialog.startLoadingDialog()
+        if (!validPhone) {
+            dialog.stopLoadingDialog()
+            Toast.makeText(requireContext(), "Your Phone is invalid!", Toast.LENGTH_LONG).show()
+        }
+        else if (TextUtils.isEmpty(binding.txtInputEdtName.text.toString())) {
+            dialog.stopLoadingDialog()
+            Toast.makeText(requireContext(), "Your Name is empty!", Toast.LENGTH_LONG).show()
+        }
+        else {
+            userName = HandleString.standardizeString(binding.txtInputEdtName.text.toString())
+            binding.txtInputEdtName.setText(userName)
+            val phoneNumber:String = binding.cppRegister.selectedCountryCodeWithPlus + binding.txtInputEdtPhone.text.toString()
+            //chưa check xem phone có tồn tại trong database chưa!!!
+            HandlePhone.generateOTP(phoneNumber, requireActivity(), initCallbackToListenOTP())
+        }
+    }
+
 
     private fun initCallbackToListenOTP(): PhoneAuthProvider.OnVerificationStateChangedCallbacks {
         val callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks =
@@ -88,15 +103,12 @@ class RegisterFragment : Fragment() {
                     Toast.makeText(requireContext(), "${p0.message}", Toast.LENGTH_LONG).show()
                 }
 
-                override fun onCodeSent(
-                    verificationCode: String,
-                    p1: PhoneAuthProvider.ForceResendingToken
-                ) {
-                    // The SMS verification code has been sent to the provided phone number, we
-                    // now need to ask the user to enter the code and then construct a credential
-                    // by combining the code with a verification ID.
-                    verificationId = verificationCode // code use : register user affter verify OTP
-                    val bundle: Bundle = bundleOf("CODE" to verificationId)
+                override fun onCodeSent(verificationCode: String, p1: PhoneAuthProvider.ForceResendingToken) {
+
+                    verificationId = verificationCode // code use : register user after verify OTP
+                    val user:User = User(userName, "", "", "", "", "")
+                    val bundle: Bundle = bundleOf("CODE" to verificationId, "INFO_USER" to user)
+
                     dialog.stopLoadingDialog()
                     controller.navigate(R.id.verifyNumberFragment, bundle)
                 }
@@ -104,16 +116,6 @@ class RegisterFragment : Fragment() {
         return callbacks
     }
 
-    private fun generateOTP() {
-        val options = PhoneAuthOptions.newBuilder(auth)
-            // Phone number to verify
-            .setPhoneNumber(binding.cppRegister.selectedCountryCodeWithPlus + binding.txtInputEdt.text.toString())
-            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(requireActivity())                 // Activity (for callback binding)
-            .setCallbacks(initCallbackToListenOTP())          // OnVerificationStateChangedCallbacks
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
-    }
 
     private fun checkValidNumberPhone() {
         binding.cppRegister.setPhoneNumberValidityChangeListener { isValid ->
@@ -128,11 +130,22 @@ class RegisterFragment : Fragment() {
     }
 
     private fun checkLengthNumberPhone() {
-        binding.txtInputEdt.doOnTextChanged { text, start, before, count ->
+        binding.txtInputEdtPhone.doOnTextChanged { text, start, before, count ->
             if (text!!.length > 20) {
                 binding.txtInputLayout.error = "No More!"
             } else if (text.length < 20) {
                 binding.txtInputLayout.error = null
+            }
+        }
+    }
+
+    private fun checkLengthName() {
+        binding.txtInputEdtName.doOnTextChanged { text, start, before, count ->
+            if (text!!.length > 30) {
+                binding.txtInputLayout.error = "No More!"
+            } else if (text.length < 30) {
+                binding.txtInputLayout.error = null
+
             }
         }
     }

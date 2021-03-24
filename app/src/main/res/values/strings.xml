@@ -7,8 +7,10 @@
     <string name="Register">Register</string>
     <string name="ValidOrUnvalid">Valid Or Unvalid</string>
     <string name="Phone">Phone</string>
-    <string name="Verify">Verify</string>
+    <string name="Verify">Verify to register account</string>
+    <string name="VerifyToLogin">Verify to login</string>
 
+    <string name="Login">Login</string>
     <string name="Name">Name</string>
     <string name="Password">Password</string>
 </resources>

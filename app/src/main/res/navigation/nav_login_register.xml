@@ -26,7 +26,11 @@
         android:id="@+id/loginFragment"
         android:name="com.doanducdat.chatapp.ui.fragment.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_verifyNumberLoginFragment"
+            app:destination="@id/verifyNumberLoginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.doanducdat.chatapp.ui.fragment.login.RegisterFragment"
@@ -35,4 +39,8 @@
             android:id="@+id/action_registerFragment_to_verifyNumberFragment"
             app:destination="@id/verifyNumberFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/verifyNumberLoginFragment"
+        android:name="com.doanducdat.chatapp.ui.fragment.login.VerifyNumberLoginFragment"
+        android:label="VerifyNumberLoginFragment" />
 </navigation>
