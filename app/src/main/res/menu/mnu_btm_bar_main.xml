@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mnu_chatFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_chat"
+        app:cnb_iconColor ="@color/colorOfgetstarted"
+        android:title="@string/Chat" />
+    <item
+        android:id="@+id/mnu_contactFragment"
+        android:icon="@drawable/ic_contact"
+        android:enabled="true"
+        app:cnb_iconColor ="@color/colorOfgetstarted"
+        android:title="@string/Contact" />
+    <item
+        android:id="@+id/mnu_profileFragment"
+        android:icon="@drawable/ic_profile"
+        android:enabled="true"
+        app:cnb_iconColor ="@color/colorOfgetstarted"
+        android:title="@string/Profile" />
+</menu>

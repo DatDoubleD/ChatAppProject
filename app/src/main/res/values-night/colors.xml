@@ -7,9 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="mytext">#FFFFFF</color>
+    <color name="mytext">#F6F0F0</color>
     <color name="textOftabLoginAndRegister">#FFFFFF</color>
     <color name="helperTextColor">#FFFFFF</color>
     <color name="bgColorDialog">#535151</color>
+    <color name="bgChipNvgBar">#000000</color>
 
 </resources>
