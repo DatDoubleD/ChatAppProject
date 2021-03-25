@@ -76,6 +76,16 @@ dependencies {
 
     //Chip navigation bar(custom btmNvgBar)
     implementation 'com.ismaeldivita.chipnavigation:chip-navigation-bar:1.3.4'
+    //circle Image
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    //viewmodel-livedata
+    def lifecycle_version = "2.3.1"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    // Annotation processor
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
 }
