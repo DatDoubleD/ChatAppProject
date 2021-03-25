@@ -2,6 +2,7 @@ package com.doanducdat.chatapp.ui.fragment.login
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,8 @@ import com.doanducdat.chatapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 
 class VerifyNumberFragment : Fragment() {
 
@@ -23,11 +25,19 @@ class VerifyNumberFragment : Fragment() {
     private lateinit var codeOTP: String
     private var verificationId: String? = null
     private lateinit var user: User
+
     private val dialog: LoadingDialog by lazy {
         LoadingDialog(requireActivity())
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val db by lazy { FirebaseDatabase.getInstance().reference }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentVerifyNumberBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,28 +53,79 @@ class VerifyNumberFragment : Fragment() {
                 //verificationID: OTP receive, codeOTP: OTP user retype to verify
                 val credential = PhoneAuthProvider.getCredential(verificationId!!, codeOTP)
                 registerUser(credential)
+            }else{
+                dialog.stopLoadingDialog()
+                Toast.makeText(
+                    requireContext(),
+                    "Failed, please check your OTP again!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
 
     private fun registerUser(credential: PhoneAuthCredential) {
-        val firebaseAuth = FirebaseAuth.getInstance()
-        val db = FirebaseDatabase.getInstance().getReference("users")
-
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener {
-                if (it.isSuccessful) {
+                if (it.isSuccessful) { // khớp OTP -> check use if exits?
                     user.phone = firebaseAuth.currentUser!!.phoneNumber!!
                     user.uID = firebaseAuth.currentUser!!.uid
-
-                    db.child(firebaseAuth.uid!!).setValue(user)
-                    dialog.stopLoadingDialog()
-                    Toast.makeText(requireContext(), "Register successfully, you can use this account to Login!", Toast.LENGTH_LONG).show()
-                    findNavController().popBackStack()
+                    checkUserIDExit(firebaseAuth.currentUser!!.uid)
                 }
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed, please check your OTP again!", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(), // chưa check internet
+                    "Failed, please check your OTP again!",
+                    Toast.LENGTH_LONG
+                ).show()
                 dialog.stopLoadingDialog()
+            }
+    }
+
+    private fun checkUserIDExit(uid: String) {
+        //register
+        db.child("users").child(uid).get().addOnSuccessListener {
+            //exit -> fail, not exit -> create new user
+            if (it.exists()) {
+                dialog.stopLoadingDialog()
+                Toast.makeText(
+                    requireContext(),
+                    "Fail, this phone number is already in use with another account!",
+                    Toast.LENGTH_LONG
+                ).show()
+                findNavController().popBackStack()
+            } else {
+                createNewUserToDatabase()
+            }
+
+        }.addOnFailureListener {
+            dialog.stopLoadingDialog()
+            Toast.makeText(
+                requireContext(),// chưa check internet
+                "Fail, an error occurred. Please try again later",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun createNewUserToDatabase() {
+        db.child("users").child(firebaseAuth.uid!!).setValue(user)
+            .addOnCompleteListener {
+                dialog.stopLoadingDialog()
+                Toast.makeText(
+                    requireContext(),
+                    "Successfully, You can login with this phone!",
+                    Toast.LENGTH_LONG
+                ).show()
+                findNavController().popBackStack()
+            }
+            .addOnFailureListener {
+                dialog.stopLoadingDialog()
+                Toast.makeText(
+                    requireContext(),
+                    "Fail, an error occurred. Please try again later",
+                    Toast.LENGTH_LONG
+                ).show()
             }
     }
 

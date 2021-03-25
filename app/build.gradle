@@ -74,5 +74,8 @@ dependencies {
     //OTP pinview
     implementation 'io.github.chaosleung:pinview:1.4.4'
 
+    //ExpandableBottomBar
+    implementation 'com.github.st235:expandablebottombar:X.X'
+
 
 }

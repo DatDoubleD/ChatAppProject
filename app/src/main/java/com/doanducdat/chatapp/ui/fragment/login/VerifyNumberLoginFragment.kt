@@ -1,5 +1,6 @@
 package com.doanducdat.chatapp.ui.fragment.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -8,10 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentVerifyNumberLoginBinding
 import com.doanducdat.chatapp.model.LoadingDialog
 import com.doanducdat.chatapp.model.User
+import com.doanducdat.chatapp.ui.activity.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
@@ -24,9 +25,11 @@ class VerifyNumberLoginFragment : Fragment() {
     private var verificationId: String? = null
     private lateinit var user: User
     private lateinit var codeOTP: String
-    private val dialog: LoadingDialog by lazy {
-        LoadingDialog(requireActivity())
-    }
+
+    private val dialog: LoadingDialog by lazy { LoadingDialog(requireActivity()) }
+    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val db by lazy { FirebaseDatabase.getInstance().reference }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,31 +46,65 @@ class VerifyNumberLoginFragment : Fragment() {
             dialog.startLoadingDialog()
             if (checkOTP()){
                 val credential = PhoneAuthProvider.getCredential(verificationId!!, codeOTP)
-                Login(credential)
+                login(credential)
+            }else{
+                dialog.stopLoadingDialog()
+                Toast.makeText(
+                    requireContext(),
+                    "Failed, please check your OTP again!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
-    private fun Login(credential: PhoneAuthCredential) {
-        val firebaseAuth = FirebaseAuth.getInstance()
 
+
+    private fun login(credential: PhoneAuthCredential) {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    dialog.stopLoadingDialog()
-                    Toast.makeText(requireContext(), firebaseAuth.currentUser!!.uid, Toast.LENGTH_LONG).show()
-
+                if (it.isSuccessful) { //khớp OTP -> check if phone number was register?
+                    checkPhoneNumberIsRegister(firebaseAuth.currentUser!!.uid)
                 }
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Failed, please check your OTP again!", Toast.LENGTH_LONG).show()
                 dialog.stopLoadingDialog()
             }
     }
+
+    private fun checkPhoneNumberIsRegister(uid: String) {
+        db.child("users").child(uid).get().addOnSuccessListener {
+            //exit -> login , not exit -> msg: not register
+            if (it.exists()) {
+                dialog.stopLoadingDialog()
+                startActivity(Intent(requireContext(), MainActivity::class.java))
+                requireActivity().finish()
+            } else {
+                dialog.stopLoadingDialog()
+                Toast.makeText(
+                    requireContext(),
+                    "Fail, this phone number is not registered!",
+                    Toast.LENGTH_LONG
+                ).show()
+                findNavController().popBackStack()
+            }
+
+        }.addOnFailureListener {
+            dialog.stopLoadingDialog()
+            Toast.makeText(
+                requireContext(),// chưa check internet
+                "Fail, an error occurred. Please try again later",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     private fun getID() {
         val bundle: Bundle? = arguments
         if (bundle != null) {
             verificationId = bundle.getString("CODE")
         }
     }
+
     private fun checkOTP(): Boolean {
         //verify OTP ok -> use CODE login
         codeOTP = binding.pinViewOtp.text.toString()
