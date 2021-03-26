@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
@@ -14,14 +13,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentRegisterBinding
-import com.doanducdat.chatapp.model.LoadingDialog
+import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.utils.HandlePhone
 import com.doanducdat.chatapp.utils.HandleString
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
-import java.util.concurrent.TimeUnit
 
 class RegisterFragment : Fragment() {
 
@@ -35,8 +33,8 @@ class RegisterFragment : Fragment() {
 
     private val controller by lazy { navHostFragment.findNavController() }
 
-    private val dialog: LoadingDialog by lazy {
-        LoadingDialog(requireActivity())
+    private val dialog: MyCustomDialog by lazy {
+        MyCustomDialog(requireActivity())
     }
 
     private lateinit var userName:String
@@ -65,7 +63,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun checkInFoUserToRegister() {
-        dialog.startLoadingDialog()
+        dialog.startLoadingDialog(R.layout.custom_dialog, 200, 250)
         if (!validPhone) {
             dialog.stopLoadingDialog()
             Toast.makeText(requireContext(), "Your Phone is invalid!", Toast.LENGTH_LONG).show()
@@ -106,7 +104,7 @@ class RegisterFragment : Fragment() {
                 override fun onCodeSent(verificationCode: String, p1: PhoneAuthProvider.ForceResendingToken) {
 
                     verificationId = verificationCode // code use : register user after verify OTP
-                    val user:User = User(userName, "", "", "", "", "")
+                    val user:User = User(userName, "Here is your status", "", "", "0000", "")
                     val bundle: Bundle = bundleOf("CODE" to verificationId, "INFO_USER" to user)
 
                     dialog.stopLoadingDialog()

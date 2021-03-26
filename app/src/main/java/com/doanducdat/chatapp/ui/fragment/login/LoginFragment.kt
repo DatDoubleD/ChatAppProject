@@ -1,6 +1,5 @@
 package com.doanducdat.chatapp.ui.fragment.login
 
-import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,8 +12,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentLoginBinding
-import com.doanducdat.chatapp.model.LoadingDialog
-import com.doanducdat.chatapp.model.User
+import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.utils.HandlePhone
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -32,8 +30,8 @@ class LoginFragment : Fragment() {
     }
 
     private val controller by lazy { navHostFragment.findNavController() }
-    private val dialog: LoadingDialog by lazy {
-        LoadingDialog(requireActivity())
+    private val dialog: MyCustomDialog by lazy {
+        MyCustomDialog(requireActivity())
     }
 
     override fun onCreateView(
@@ -59,7 +57,7 @@ class LoginFragment : Fragment() {
 
 
     private fun checkInFoUserToLogin() {
-        dialog.startLoadingDialog()
+        dialog.startLoadingDialog(R.layout.custom_dialog, 200, 250)
         if (!validPhone) {
             dialog.stopLoadingDialog()
             Toast.makeText(requireContext(), "Your Phone is invalid!", Toast.LENGTH_LONG).show()

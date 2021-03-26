@@ -9,19 +9,19 @@ import android.view.WindowManager
 import com.doanducdat.chatapp.R
 
 
-class LoadingDialog(var activity: Activity) {
+class MyCustomDialog(var activity: Activity) {
 
     private lateinit var dialog: AlertDialog
 
-    fun startLoadingDialog() {
+    fun startLoadingDialog(idResource:Int, sizeWidth:Int, sizeHeight:Int) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
         val inflater: LayoutInflater = activity.layoutInflater;
-        builder.setView(inflater.inflate(R.layout.custom_dialog, null))
+        builder.setView(inflater.inflate(idResource, null))
         builder.setCancelable(false)
 
         dialog = builder.create();
         dialog.show()
-        dialog.window?.setLayout(200, 250)
+        dialog.window?.setLayout(sizeWidth, sizeHeight)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
     }

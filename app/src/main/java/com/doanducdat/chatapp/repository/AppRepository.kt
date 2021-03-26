@@ -39,4 +39,11 @@ class AppRepository {
         })
         return liveData
     }
+
+    fun updateStatus(status:String)  {
+        var resultUpdate:Boolean = false
+        database = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
+        val map:Map<String, Any> = mapOf("status" to status)
+        database.updateChildren(map)
+    }
 }

@@ -9,5 +9,7 @@ class ProfileViewModel : ViewModel() {
 
     private var appRepository: AppRepository = AppRepository.getInstance()
 
-    fun getUser():LiveData<User> = appRepository.getUser()
+    fun getUser(): LiveData<User> = appRepository.getUser()
+
+    fun updateStatus(status:String) = appRepository.updateStatus(status)
 }

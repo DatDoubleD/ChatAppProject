@@ -9,8 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentVerifyNumberLoginBinding
-import com.doanducdat.chatapp.model.LoadingDialog
+import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.activity.MainActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +27,7 @@ class VerifyNumberLoginFragment : Fragment() {
     private lateinit var user: User
     private lateinit var codeOTP: String
 
-    private val dialog: LoadingDialog by lazy { LoadingDialog(requireActivity()) }
+    private val dialog: MyCustomDialog by lazy { MyCustomDialog(requireActivity()) }
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val db by lazy { FirebaseDatabase.getInstance().reference }
 
@@ -43,7 +44,7 @@ class VerifyNumberLoginFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         getID()
         binding.btnVerifyLogin.setOnClickListener {
-            dialog.startLoadingDialog()
+            dialog.startLoadingDialog(R.layout.custom_dialog, 200, 250)
             if (checkOTP()){
                 val credential = PhoneAuthProvider.getCredential(verificationId!!, codeOTP)
                 login(credential)

@@ -16,7 +16,7 @@ class HandleString {
                 strStandardized += temp[i][0].toString().toUpperCase(Locale.ROOT) + temp[i].substring(1)
                     .toLowerCase(Locale.ROOT) + " "
             }
-            return strStandardized
+            return strStandardized.trim()
         }
     }
 }

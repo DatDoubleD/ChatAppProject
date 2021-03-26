@@ -12,5 +12,5 @@
     <color name="helperTextColor">#FFFFFF</color>
     <color name="bgColorDialog">#535151</color>
     <color name="bgChipNvgBar">#000000</color>
-
+    <color name="bgLayoutStatus">#535151</color>
 </resources>

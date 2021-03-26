@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="user"
             type="com.doanducdat.chatapp.model.User" />
@@ -15,10 +16,10 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:layout_marginTop="60dp"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgAvatar"
@@ -32,9 +33,9 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgEditAvatar"
-                android:layout_gravity="bottom|end"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_gravity="bottom|end"
                 android:src="@drawable/iconcheckavatar"
                 app:civ_border_color="@color/white"
                 app:civ_border_width="2dp" />
@@ -52,20 +53,85 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txt_birth_year"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
+            android:id="@+id/txt_status"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Nam sinh"
-            android:textColor="@color/mytext" />
-        <TextView
-            android:id="@+id/txt_phone_number"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:textAlignment="center"
+            android:text="@{user.status}"
+             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@{user.phone}"
-            android:textColor="@color/mytext" />
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/BirthYear"
+                android:textColor="@color/mytext" />
+
+            <TextView
+                android:id="@+id/txt_birth_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{user.birthYear}"
+                android:textColor="@color/mytext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/PhoneNumber"
+                android:textColor="@color/mytext" />
+
+            <TextView
+                android:id="@+id/txt_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{user.phone}"
+                android:textColor="@color/mytext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_edit_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_txt_profile_two_style"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_status" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:text="@string/EditStatus"
+                android:textColor="@color/mytext"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

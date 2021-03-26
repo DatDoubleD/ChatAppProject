@@ -2,7 +2,6 @@ package com.doanducdat.chatapp.ui.fragment.login
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentVerifyNumberBinding
-import com.doanducdat.chatapp.model.LoadingDialog
+import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
 
 class VerifyNumberFragment : Fragment() {
 
@@ -26,8 +24,8 @@ class VerifyNumberFragment : Fragment() {
     private var verificationId: String? = null
     private lateinit var user: User
 
-    private val dialog: LoadingDialog by lazy {
-        LoadingDialog(requireActivity())
+    private val dialog: MyCustomDialog by lazy {
+        MyCustomDialog(requireActivity())
     }
 
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
@@ -48,7 +46,7 @@ class VerifyNumberFragment : Fragment() {
         getIdAndInfoUser()
         //click verify: check OTP -> register credential
         binding.btnVerify.setOnClickListener {
-            dialog.startLoadingDialog()
+            dialog.startLoadingDialog(R.layout.custom_dialog, 200, 250)
             if (checkOTP()) {
                 //verificationID: OTP receive, codeOTP: OTP user retype to verify
                 val credential = PhoneAuthProvider.getCredential(verificationId!!, codeOTP)

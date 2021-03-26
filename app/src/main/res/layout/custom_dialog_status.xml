@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="ProfileModel"
+            type="com.doanducdat.chatapp.viewmodel.ProfileViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/bg_layout_status"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edt_status"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:autofillHints="enter your status"
+            android:background="@drawable/bg_edt_status"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/mytext"
+            android:textColorHint="@color/mytext" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_done"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_btn_get_started_two_style"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/Done"
+            android:textAllCaps="false"
+            android:textStyle="bold" />
+    </LinearLayout>
+</layout>
