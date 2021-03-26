@@ -1,5 +1,6 @@
 package com.doanducdat.chatapp.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.doanducdat.chatapp.model.User
@@ -12,4 +13,6 @@ class ProfileViewModel : ViewModel() {
     fun getUser(): LiveData<User> = appRepository.getUser()
 
     fun updateStatus(status:String) = appRepository.updateStatus(status)
+
+    fun updateAvatar(bitmap: Bitmap) = appRepository.updateAvatar(bitmap)
 }

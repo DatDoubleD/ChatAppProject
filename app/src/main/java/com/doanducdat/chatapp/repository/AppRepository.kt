@@ -1,14 +1,19 @@
 package com.doanducdat.chatapp.repository
 
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.utils.AppUtil
+import com.doanducdat.chatapp.utils.HandleImage
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class AppRepository {
     private var liveData: MutableLiveData<User> = MutableLiveData()
-
+    private val storageRef: StorageReference = FirebaseStorage.getInstance().reference
     private lateinit var database: DatabaseReference
     private val appUtil: AppUtil = AppUtil()
 
@@ -40,10 +45,30 @@ class AppRepository {
         return liveData
     }
 
-    fun updateStatus(status:String)  {
-        var resultUpdate:Boolean = false
+    fun updateStatus(status: String) {
         database = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
-        val map:Map<String, Any> = mapOf("status" to status)
+        val map: Map<String, Any> = mapOf("status" to status)
+        database.updateChildren(map)
+    }
+
+    fun updateAvatar(bitmap: Bitmap) {
+        val avatarRef = storageRef.child("${appUtil.getUid()}/avatar.png")
+
+        val bitmapResized: Bitmap = HandleImage.resizeBitmap(bitmap, 761, 761)
+
+        var uploadTask = avatarRef.putBytes(HandleImage.fromBitmap(bitmapResized))
+
+        uploadTask.addOnSuccessListener {
+            it.storage.downloadUrl.addOnSuccessListener { uri ->
+                uploadLinkAvatarToUser(uri)
+            }
+        }
+
+    }
+
+    private fun uploadLinkAvatarToUser(uri: Uri) {
+        database = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
+        val map: Map<String, Any> = mapOf("image" to uri.toString())
         database.updateChildren(map)
     }
 }

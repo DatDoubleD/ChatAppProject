@@ -7,28 +7,34 @@
 
     </data>
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/container_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         tools:context=".ui.activity.MainActivity">
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/nav_host_fragment_main"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_btm_bar_main_app" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <com.ismaeldivita.chipnavigation.ChipNavigationBar
-            android:padding="8dp"
-            android:id="@+id/btm_nvg_bar_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/bgChipNvgBar"
-            app:cnb_menuResource="@menu/mnu_btm_bar_main" />
-    </LinearLayout>
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/nav_host_fragment_main"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_btm_bar_main_app" />
+
+            <com.ismaeldivita.chipnavigation.ChipNavigationBar
+                android:id="@+id/btm_nvg_bar_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/bgChipNvgBar"
+                android:padding="8dp"
+                app:cnb_menuResource="@menu/mnu_btm_bar_main" />
+        </LinearLayout>
+    </FrameLayout>
 </layout>
