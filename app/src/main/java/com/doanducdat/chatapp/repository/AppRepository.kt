@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.doanducdat.chatapp.`interface`.MyCallback
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.utils.AppUtil
 import com.doanducdat.chatapp.utils.HandleImage
@@ -51,7 +52,7 @@ class AppRepository {
         database.updateChildren(map)
     }
 
-    fun updateAvatar(bitmap: Bitmap) {
+    fun updateAvatar(bitmap: Bitmap, result:MyCallback) {
         val avatarRef = storageRef.child("${appUtil.getUid()}/avatar.png")
 
         val bitmapResized: Bitmap = HandleImage.resizeBitmap(bitmap, 761, 761)
@@ -60,15 +61,19 @@ class AppRepository {
 
         uploadTask.addOnSuccessListener {
             it.storage.downloadUrl.addOnSuccessListener { uri ->
-                uploadLinkAvatarToUser(uri)
+                uploadLinkAvatarToUser(uri, result)
             }
         }
 
     }
 
-    private fun uploadLinkAvatarToUser(uri: Uri) {
+    private fun uploadLinkAvatarToUser(uri: Uri, result: MyCallback) {
         database = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
         val map: Map<String, Any> = mapOf("image" to uri.toString())
-        database.updateChildren(map)
+        database.updateChildren(map).addOnCompleteListener {
+            result.resultUpdateAvatar(true)
+        }.addOnFailureListener {
+            result.resultUpdateAvatar(false)
+        }
     }
 }

@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.CustomDialogStatusBinding
 import com.doanducdat.chatapp.databinding.FragmentProfileBinding
@@ -39,6 +40,12 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        //update user in view.xml
+        profileViewModel.getUser().observe(viewLifecycleOwner, {
+            user = it
+            binding.user = it
+            binding.imgAvatar.load(user.image)
+        })
         return binding.root
     }
 
@@ -46,10 +53,7 @@ class ProfileFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
 
-        profileViewModel.getUser().observe(viewLifecycleOwner, {
-            user = it
-            binding.user = it
-        })
+
 
         binding.btnEditStatus.setOnClickListener {
             startLoadingDialog(750, 500)

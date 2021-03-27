@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import coil.load
 import com.doanducdat.chatapp.R
+import com.doanducdat.chatapp.`interface`.MyCallback
 import com.doanducdat.chatapp.databinding.FragmentViewAvatarBinding
 import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.utils.CheckPermission
 import com.doanducdat.chatapp.viewmodel.ProfileViewModel
+import com.google.firebase.database.Transaction
 
 class ViewAvatarFragment : Fragment() {
 
@@ -43,14 +46,29 @@ class ViewAvatarFragment : Fragment() {
             updateAvatar()
         }
         binding.btnBack.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
+            closeThisFragment()
         }
     }
+    private fun closeThisFragment(){
+        requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
 
+    }
     private fun updateAvatar() {
         myCustomDialog.startLoadingDialog(R.layout.custom_dialog, 200, 250)
         val bitmap: Bitmap = (binding.photoViewAvatar.drawable as BitmapDrawable).bitmap
-        profileModel.updateAvatar(bitmap)
+        profileModel.updateAvatar(bitmap, object : MyCallback {
+            override fun resultUpdateAvatar(result: Boolean) {
+                if (result) {
+                    myCustomDialog.stopLoadingDialog()
+                    Log.d("AVATAR", "true")
+                    closeThisFragment()
+                } else {
+                    myCustomDialog.stopLoadingDialog()
+                    Log.d("AVATAR", "false")
+                    closeThisFragment()
+                }
+            }
+        })
     }
 
     private fun pickImage() {
