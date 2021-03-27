@@ -15,7 +15,7 @@ import com.google.firebase.database.*
 class ViewProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentViewProfileBinding
-    private lateinit var user: User
+    private lateinit var userLocal: User
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,12 +41,12 @@ class ViewProfileFragment : Fragment() {
     private fun getData() {
         val bundle: Bundle? = arguments
         if (bundle != null) {
-            user = bundle.getSerializable("INFO_USER") as User
+            userLocal = bundle.getSerializable("INFO_USER") as User
         }
     }
 
     private fun getUserInfoViewProfile() {
-        val database: DatabaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.uID.toString())
+        val database: DatabaseReference = FirebaseDatabase.getInstance().getReference("users").child(userLocal.uID.toString())
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
