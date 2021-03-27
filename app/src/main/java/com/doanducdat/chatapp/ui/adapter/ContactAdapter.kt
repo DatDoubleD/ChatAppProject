@@ -2,19 +2,27 @@ package com.doanducdat.chatapp.ui.adapter
 
 import android.app.Activity
 import android.content.Context
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.doanducdat.chatapp.databinding.ItemContactBinding
 import com.doanducdat.chatapp.model.User
+import java.util.*
 
-class ContactAdapter(private val appContact: MutableList<User>, private val onItemClickInfoUser:(User) -> Unit) :
-    RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
+class ContactAdapter(
+    private var appContact: MutableList<User>,
+    private val onItemClickInfoUser: (User) -> Unit
+) :
+    RecyclerView.Adapter<ContactAdapter.ContactViewHolder>(), Filterable {
 
-    inner class ContactViewHolder(binding:ItemContactBinding ) : RecyclerView.ViewHolder(binding.root) {
-        private val itemContactBinding:ItemContactBinding = binding
+    inner class ContactViewHolder(binding: ItemContactBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private val itemContactBinding: ItemContactBinding = binding
         fun onBind(user: User) {
             itemContactBinding.user = user
             itemContactBinding.imgInfo.setOnClickListener {
@@ -24,8 +32,10 @@ class ContactAdapter(private val appContact: MutableList<User>, private val onIt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
-        val binding: ItemContactBinding = ItemContactBinding.inflate(LayoutInflater.from(parent.context),
-            parent, false)
+        val binding: ItemContactBinding = ItemContactBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
+        )
         return ContactViewHolder(binding)
 
     }
@@ -36,5 +46,33 @@ class ContactAdapter(private val appContact: MutableList<User>, private val onIt
 
     override fun getItemCount(): Int {
         return appContact.size
+    }
+
+    var filteredContact: MutableList<User> = mutableListOf()
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val searchContent: String = constraint.toString()
+                if (TextUtils.isEmpty(searchContent)) {//show allcontact, not search -> search is empty -> show data of appcontact
+                    filteredContact = appContact
+                } else {
+                    for (user in appContact) {
+                        if (user.name.toLowerCase(Locale.ROOT).trim().contains(searchContent.toLowerCase(Locale.ROOT).trim())){
+                            filteredContact.add(user)
+                        }
+                    }
+                }
+                //return FilterResults type data -> publishResults method
+                val filterResult:FilterResults = FilterResults()
+                filterResult.values = filteredContact
+                return filterResult
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                // assign results for appcontact because appContact is list that use to update UI
+                appContact = results?.values as MutableList<User>
+                notifyDataSetChanged()
+            }
+        }
     }
 }

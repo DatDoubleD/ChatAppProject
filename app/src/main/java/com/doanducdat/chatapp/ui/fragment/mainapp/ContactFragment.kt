@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import com.doanducdat.chatapp.R
@@ -29,6 +30,7 @@ class ContactFragment : Fragment() {
     private var mobileContact: MutableList<User> = mutableListOf()
     private var appContact: MutableList<User> = mutableListOf()
     private val myCustomDialog: MyCustomDialog by lazy { MyCustomDialog(requireActivity()) }
+    private lateinit var adapter: ContactAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,7 +41,24 @@ class ContactFragment : Fragment() {
             //get mobile contact -> get database with mobile contact -> i will have app contact
             getMobileContact()
         }
+        setFilter()
+
         return binding.root
+    }
+
+    private fun setFilter() {
+        binding.searchViewContact.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return false
+            }
+        })
+
     }
 
     private fun getMobileContact() {
@@ -55,13 +74,13 @@ class ContactFragment : Fragment() {
         )
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                var name: String =
+                val name: String =
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
                 var number: String =
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
 
                 number = number.replace("\\s".toRegex(), "")
-                var num = number.elementAt(0).toString()
+                val num = number.elementAt(0).toString()
                 if (num == "0")
                     number = number.replaceFirst("(?:0)+".toRegex(), "+84")
 
@@ -93,7 +112,6 @@ class ContactFragment : Fragment() {
                     }
                     // update UI
                     updateUI()
-
                 }
             }
 
@@ -109,7 +127,7 @@ class ContactFragment : Fragment() {
     }
 
     private fun updateUI() {
-        val adapter: ContactAdapter = ContactAdapter(appContact, onItemClickInfoUser)
+        adapter = ContactAdapter(appContact, onItemClickInfoUser)
         binding.rcvPhoneUser.setHasFixedSize(true)
         binding.rcvPhoneUser.adapter = adapter
         myCustomDialog.stopLoadingDialog()
@@ -119,6 +137,7 @@ class ContactFragment : Fragment() {
         val viewProfileFragment: ViewProfileFragment = ViewProfileFragment()
         val bundle: Bundle = bundleOf("INFO_USER" to it)
         viewProfileFragment.arguments = bundle
-        requireActivity().supportFragmentManager.beginTransaction().add(R.id.container_main, viewProfileFragment).commit()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.container_main, viewProfileFragment).commit()
     }
 }
