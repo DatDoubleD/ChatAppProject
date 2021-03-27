@@ -29,4 +29,8 @@ class MainActivity : AppCompatActivity() {
         }
         binding.btmNvgBarMain.setItemSelected(R.id.mnu_chatFragment)
     }
+
+    override fun onBackPressed() {
+        return
+    }
 }

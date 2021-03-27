@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import coil.load
@@ -60,11 +61,11 @@ class ViewAvatarFragment : Fragment() {
             override fun resultUpdateAvatar(result: Boolean) {
                 if (result) {
                     myCustomDialog.stopLoadingDialog()
-                    Log.d("AVATAR", "true")
+                    Toast.makeText(requireContext(), "Update avatar successfully!", Toast.LENGTH_SHORT).show()
                     closeThisFragment()
                 } else {
                     myCustomDialog.stopLoadingDialog()
-                    Log.d("AVATAR", "false")
+                    Toast.makeText(requireContext(), "Fail! please try again later", Toast.LENGTH_SHORT).show()
                     closeThisFragment()
                 }
             }

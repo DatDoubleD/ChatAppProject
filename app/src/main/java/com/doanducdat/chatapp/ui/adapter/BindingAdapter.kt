@@ -8,10 +8,10 @@ import com.doanducdat.chatapp.model.User
 import de.hdodenhof.circleimageview.CircleImageView
 
 @BindingAdapter("app:setAvatar")
-fun setAvatar(view: CircleImageView, user: User){
-    if (TextUtils.isEmpty(user.image) || user.image == null){
+fun setAvatar(view: CircleImageView, img:String){
+    if (TextUtils.isEmpty(img) ){
         view.load(R.drawable.avatar)
     }else{
-        view.load(user.image)
+        view.load(img)
     }
 }
