@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/bg_change_avatar_two_style"
+        android:background="@color/bgColorDialog"
         android:orientation="vertical"
         app:cardCornerRadius="10dp">
 
@@ -56,12 +56,13 @@
                     android:textColor="@color/mytext" />
             </LinearLayout>
             <ImageView
+                android:id="@+id/img_info"
                 android:background="@drawable/bg_click_two_style_info"
                 android:layout_marginEnd="5dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </layout>

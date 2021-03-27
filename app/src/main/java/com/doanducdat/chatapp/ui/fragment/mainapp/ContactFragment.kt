@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentContactBinding
+import com.doanducdat.chatapp.databinding.FragmentViewProfileBinding
 import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.adapter.ContactAdapter
@@ -24,15 +26,15 @@ import com.google.firebase.database.ValueEventListener
 class ContactFragment : Fragment() {
 
     private lateinit var binding: FragmentContactBinding
-    private var mobileContact:MutableList<User> = mutableListOf()
-    private var appContact:MutableList<User> = mutableListOf()
-    private val myCustomDialog:MyCustomDialog by lazy { MyCustomDialog(requireActivity()) }
+    private var mobileContact: MutableList<User> = mutableListOf()
+    private var appContact: MutableList<User> = mutableListOf()
+    private val myCustomDialog: MyCustomDialog by lazy { MyCustomDialog(requireActivity()) }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentContactBinding.inflate(inflater, container, false)
-        if (CheckPermission.requestPermissionContact(requireActivity(), 2000)){
+        if (CheckPermission.requestPermissionContact(requireActivity(), 2000)) {
             myCustomDialog.startLoadingDialog(R.layout.custom_dialog, 200, 250)
             //get mobile contact -> get database with mobile contact -> i will have app contact
             getMobileContact()
@@ -41,7 +43,7 @@ class ContactFragment : Fragment() {
     }
 
     private fun getMobileContact() {
-        val contentResolver:ContentResolver = requireContext().contentResolver
+        val contentResolver: ContentResolver = requireContext().contentResolver
         val cursor: Cursor? = contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             arrayOf(
@@ -51,7 +53,7 @@ class ContactFragment : Fragment() {
             null, null,
             null
         )
-        if (cursor!= null){
+        if (cursor != null) {
             while (cursor.moveToNext()) {
                 var name: String =
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
@@ -90,18 +92,33 @@ class ContactFragment : Fragment() {
                         }
                     }
                     // update UI
-                    val adapter: ContactAdapter = ContactAdapter(appContact)
-                    binding.rcvPhoneUser.setHasFixedSize(true)
-                    binding.rcvPhoneUser.adapter = adapter
-                    myCustomDialog.stopLoadingDialog()
+                    updateUI()
+
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 myCustomDialog.stopLoadingDialog()
-                Toast.makeText(requireContext(), "Error! please try again later", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Error! please try again later",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
 
+    private fun updateUI() {
+        val adapter: ContactAdapter = ContactAdapter(appContact, onItemClickInfoUser)
+        binding.rcvPhoneUser.setHasFixedSize(true)
+        binding.rcvPhoneUser.adapter = adapter
+        myCustomDialog.stopLoadingDialog()
+    }
+
+    private val onItemClickInfoUser: (User) -> Unit = {
+        val viewProfileFragment: ViewProfileFragment = ViewProfileFragment()
+        val bundle: Bundle = bundleOf("INFO_USER" to it)
+        viewProfileFragment.arguments = bundle
+        requireActivity().supportFragmentManager.beginTransaction().add(R.id.container_main, viewProfileFragment).commit()
+    }
 }
