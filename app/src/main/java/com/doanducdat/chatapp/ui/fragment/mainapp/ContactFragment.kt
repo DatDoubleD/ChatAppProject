@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentContactBinding
-import com.doanducdat.chatapp.databinding.FragmentViewProfileBinding
 import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.adapter.ContactAdapter
@@ -47,8 +46,7 @@ class ContactFragment : Fragment() {
     }
 
     private fun setFilter() {
-        binding.searchViewContact.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        binding.searchViewContact.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }

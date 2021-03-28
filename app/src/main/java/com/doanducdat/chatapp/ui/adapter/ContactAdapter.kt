@@ -1,14 +1,10 @@
 package com.doanducdat.chatapp.ui.adapter
 
-import android.app.Activity
-import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.doanducdat.chatapp.databinding.ItemContactBinding
 import com.doanducdat.chatapp.model.User
@@ -19,6 +15,9 @@ class ContactAdapter(
     private val onItemClickInfoUser: (User) -> Unit
 ) :
     RecyclerView.Adapter<ContactAdapter.ContactViewHolder>(), Filterable {
+
+    var contactList: MutableList<User>  = appContact
+
 
     inner class ContactViewHolder(binding: ItemContactBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -41,11 +40,11 @@ class ContactAdapter(
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
-        holder.onBind(appContact[position])
+        holder.onBind(contactList[position])
     }
 
     override fun getItemCount(): Int {
-        return appContact.size
+        return contactList.size
     }
 
     var filteredContact: MutableList<User> = mutableListOf()
@@ -53,24 +52,29 @@ class ContactAdapter(
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val searchContent: String = constraint.toString()
-                if (TextUtils.isEmpty(searchContent)) {//show allcontact, not search -> search is empty -> show data of appcontact
-                    filteredContact = appContact
+
+                if (TextUtils.isEmpty(searchContent)) {
+                    contactList = appContact
                 } else {
+                    filteredContact.clear()
                     for (user in appContact) {
-                        if (user.name.toLowerCase(Locale.ROOT).trim().contains(searchContent.toLowerCase(Locale.ROOT).trim())){
+                        if (user.name.toLowerCase(Locale.ROOT).trim()
+                                .contains(searchContent.toLowerCase(Locale.ROOT).trim())
+                        ) {
                             filteredContact.add(user)
                         }
                     }
+                    contactList = filteredContact
                 }
                 //return FilterResults type data -> publishResults method
-                val filterResult:FilterResults = FilterResults()
-                filterResult.values = filteredContact
+                val filterResult: FilterResults = FilterResults()
+                filterResult.values = contactList
                 return filterResult
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 // assign results for appcontact because appContact is list that use to update UI
-                appContact = results?.values as MutableList<User>
+                contactList = results?.values as MutableList<User>
                 notifyDataSetChanged()
             }
         }
