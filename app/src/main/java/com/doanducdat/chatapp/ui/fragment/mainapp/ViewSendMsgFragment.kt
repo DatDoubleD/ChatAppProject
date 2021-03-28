@@ -76,8 +76,8 @@ class ViewSendMsgFragment : Fragment() {
 
     //
     /***
-     * check chat is exit or not. Chat exits -> just send mess in that chatId, so first
-     * we create the chat and then send meesage
+     * check chat is exit or not. Chat exits -> just send mess in that chatId,
+     * when send message if idchat not exit -> call method: "createChat"
      */
     private fun checkChat() {
         // create chat list with id of login current user
@@ -104,22 +104,25 @@ class ViewSendMsgFragment : Fragment() {
     }
 
     /***
-     * create chat on both user because chat is same where all messages all saved
+     * create chat on both user(user is me and partner user) because chat is same where all messages all saved
+     * save "chatlist1" to "my id" and "chatlist2" to "partneruser id": chatId, lastmsg...
+     * save "msg, receiver - sender" to "chatNote"
      */
     private fun createChat(message: String) {
+        //create chatID
         var dbRef = FirebaseDatabase.getInstance().getReference("ChatList").child(appUtil.getUid())
         chatId = dbRef.push().key
-
+        //save chatlist1 to myid
         val chatList1: ChatList =
             ChatList(chatId!!, message, System.currentTimeMillis().toString(), partnerUser.uID)
         dbRef.child(chatId!!).setValue(chatList1)
 
         dbRef = FirebaseDatabase.getInstance().getReference("ChatList").child(partnerUser.uID)
-
+        //save chatlist2 to partnerUserID
         val chatList2: ChatList =
             ChatList(chatId!!, message, System.currentTimeMillis().toString(), appUtil.getUid())
         dbRef.child(chatId!!).setValue(chatList2)
-
+        //save msg, receiver - sender to chatNOTE
         dbRef = FirebaseDatabase.getInstance().getReference("Chat").child(chatId!!)
         val myMessage: Message = Message(appUtil.getUid(), partnerUser.uID, message, type = "text")
         dbRef.push().setValue(myMessage)
@@ -132,10 +135,12 @@ class ViewSendMsgFragment : Fragment() {
         if (chatId == null) {
             createChat(message)
         } else {
+            //ChatNOTE and ChatListNOTE are exit -> add new messages to chatNOTE
             var dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chat").child(chatId!!)
+            //add new messages when user click sendMessage
             val myMessage: Message = Message(appUtil.getUid(), partnerUser.uID, message, type = "text")
             dbRef.push().setValue(myMessage)
-
+            //update lastest msg to both user -> use to load itemview in fragmentChat of BtmNvgationBar
             val map: MutableMap<String, Any> = hashMapOf(
                 "lastMessage" to message,
                 "date" to System.currentTimeMillis().toString())
