@@ -125,7 +125,7 @@ class ContactFragment : Fragment() {
     }
 
     private fun updateUI() {
-        adapter = ContactAdapter(appContact, onItemClickInfoUser)
+        adapter = ContactAdapter(appContact, onItemClickInfoUser, onItemClickChatUser)
         binding.rcvPhoneUser.setHasFixedSize(true)
         binding.rcvPhoneUser.adapter = adapter
         myCustomDialog.stopLoadingDialog()
@@ -137,5 +137,12 @@ class ContactFragment : Fragment() {
         viewProfileFragment.arguments = bundle
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.container_main, viewProfileFragment).commit()
+    }
+    private val onItemClickChatUser:(User) -> Unit = {
+        val viewSendMsgFragment:ViewSendMsgFragment = ViewSendMsgFragment()
+        val bundle: Bundle = bundleOf("PARTNER_USER" to it)
+        viewSendMsgFragment.arguments = bundle
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.container_main, viewSendMsgFragment).commit()
     }
 }

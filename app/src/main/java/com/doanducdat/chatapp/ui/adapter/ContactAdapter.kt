@@ -12,7 +12,8 @@ import java.util.*
 
 class ContactAdapter(
     private var appContact: MutableList<User>,
-    private val onItemClickInfoUser: (User) -> Unit
+    private val onItemClickInfoUser: (User) -> Unit,
+    private val onItemClickChatUser: (User) -> Unit
 ) :
     RecyclerView.Adapter<ContactAdapter.ContactViewHolder>(), Filterable {
 
@@ -26,6 +27,9 @@ class ContactAdapter(
             itemContactBinding.user = user
             itemContactBinding.imgInfo.setOnClickListener {
                 onItemClickInfoUser(user)
+            }
+            itemContactBinding.imgChat.setOnClickListener {
+                onItemClickChatUser
             }
         }
     }
