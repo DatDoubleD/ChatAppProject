@@ -29,7 +29,7 @@ class ContactAdapter(
                 onItemClickInfoUser(user)
             }
             itemContactBinding.imgChat.setOnClickListener {
-                onItemClickChatUser
+                onItemClickChatUser(user)
             }
         }
     }

@@ -40,9 +40,11 @@ class ViewSendMsgFragment : Fragment() {
         binding.imgBack.setOnClickListener {
             closeFragment()
         }
+
         binding.imgInfo.setOnClickListener {
             showInforPartnetUser()
         }
+
         binding.btnSend.setOnClickListener {
             val message: String = binding.edtMsg.text.toString()
             if (TextUtils.isEmpty(message)) {
@@ -56,7 +58,7 @@ class ViewSendMsgFragment : Fragment() {
     private fun getPartnerUser() {
         val bundle: Bundle? = arguments
         if (bundle != null) {
-            partnerUser = bundle.getSerializable("INFO_USER") as User
+            partnerUser = bundle.getSerializable("PARTNER_USER") as User
         }
     }
 
@@ -69,7 +71,7 @@ class ViewSendMsgFragment : Fragment() {
     }
 
     private fun closeFragment() {
-        requireActivity().supportFragmentManager.beginTransaction().remove(this)
+        requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
     }
 
     //
