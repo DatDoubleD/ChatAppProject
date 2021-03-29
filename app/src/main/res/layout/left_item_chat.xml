@@ -37,9 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@+id/imgMessageImage"
-            android:background="@color/white"
+            android:background="@drawable/bg_left_item_chat"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="7dp">
 
             <TextView
                 android:id="@+id/txtMessage"

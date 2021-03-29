@@ -16,14 +16,14 @@ import com.doanducdat.chatapp.databinding.FragmentContactBinding
 import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.adapter.ContactAdapter
+import com.doanducdat.chatapp.utils.AppUtil
 import com.doanducdat.chatapp.utils.CheckPermission
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 
 class ContactFragment : Fragment() {
+    private val appUtil by lazy { AppUtil() }
+    private lateinit var myUser:User
 
     private lateinit var binding: FragmentContactBinding
     private var mobileContact: MutableList<User> = mutableListOf()
@@ -41,7 +41,7 @@ class ContactFragment : Fragment() {
             getMobileContact()
         }
         setFilter()
-
+        getMyUser()
         return binding.root
     }
 
@@ -140,9 +140,18 @@ class ContactFragment : Fragment() {
     }
     private val onItemClickChatUser:(User) -> Unit = {
         val viewSendMsgFragment:ViewSendMsgFragment = ViewSendMsgFragment()
-        val bundle: Bundle = bundleOf("PARTNER_USER" to it)
+        // it: partnerUser
+        val bundle: Bundle = bundleOf("PARTNER_USER" to it, "MY_USER" to myUser)
         viewSendMsgFragment.arguments = bundle
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.container_main, viewSendMsgFragment).commit()
+    }
+    private fun getMyUser() { // getmy user to send viewsendmsgFragment to show Image of myuser
+        val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
+        dbRef.get().addOnSuccessListener {
+            if (it.exists()){
+                myUser = it.getValue(User::class.java)!!
+            }
+        }
     }
 }

@@ -33,8 +33,7 @@ class ViewSendMsgFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentViewSendMsgBinding.inflate(inflater, container, false)
-        getPartnerUser()
-        getMyUser()
+        getPartnerUserAndMyUser()
         setUpEvent()
         if (chatId == null) {
             checkChat()
@@ -42,14 +41,7 @@ class ViewSendMsgFragment : Fragment() {
         return binding.root
     }
 
-    private fun getMyUser() {
-        val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
-        dbRef.get().addOnSuccessListener {
-            if (it.exists()){
-                myUser = it.getValue(User::class.java)!!
-            }
-        }
-    }
+
 
     private fun setUpEvent() {
         binding.imgBack.setOnClickListener {
@@ -70,10 +62,11 @@ class ViewSendMsgFragment : Fragment() {
         }
     }
 
-    private fun getPartnerUser() {
+    private fun getPartnerUserAndMyUser() {
         val bundle: Bundle? = arguments
         if (bundle != null) {
             partnerUser = bundle.getSerializable("PARTNER_USER") as User
+            myUser = bundle.getSerializable("MY_USER") as User
         }
     }
 
@@ -170,6 +163,8 @@ class ViewSendMsgFragment : Fragment() {
                 .child(chatId!!)
             dbRef.updateChildren(map)
         }
+        binding.edtMsg.text.clear()
+        binding.edtMsg.requestFocus()
     }
 
     /***
