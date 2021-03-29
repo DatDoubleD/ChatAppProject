@@ -94,5 +94,9 @@ dependencies {
     //coil
     implementation("io.coil-kt:coil:1.1.1")
 
+    //FirebaseRecyclerAdapter for recyclerview
+    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
+
+
 
 }

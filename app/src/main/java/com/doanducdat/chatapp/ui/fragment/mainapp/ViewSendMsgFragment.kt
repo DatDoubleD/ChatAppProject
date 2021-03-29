@@ -8,18 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentViewSendMsgBinding
 import com.doanducdat.chatapp.model.ChatList
 import com.doanducdat.chatapp.model.Message
 import com.doanducdat.chatapp.model.User
+import com.doanducdat.chatapp.ui.adapter.ChatfirebaseRecyclerAdapter
 import com.doanducdat.chatapp.utils.AppUtil
+import com.doanducdat.chatapp.viewmodel.ProfileViewModel
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.*
 
 
 class ViewSendMsgFragment : Fragment() {
     private lateinit var binding: FragmentViewSendMsgBinding
     private lateinit var partnerUser: User
+    private lateinit var myUser:User
     private var chatId: String? = null
     private val appUtil by lazy { AppUtil() }
 
@@ -29,11 +34,21 @@ class ViewSendMsgFragment : Fragment() {
     ): View {
         binding = FragmentViewSendMsgBinding.inflate(inflater, container, false)
         getPartnerUser()
+        getMyUser()
         setUpEvent()
         if (chatId == null) {
             checkChat()
         }
         return binding.root
+    }
+
+    private fun getMyUser() {
+        val dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
+        dbRef.get().addOnSuccessListener {
+            if (it.exists()){
+                myUser = it.getValue(User::class.java)!!
+            }
+        }
     }
 
     private fun setUpEvent() {
@@ -76,7 +91,7 @@ class ViewSendMsgFragment : Fragment() {
 
     //
     /***
-     * check chat is exit or not. Chat exits -> just send mess in that chatId,
+     * check chat is exit or not. Chat exits -> just send mess in that chatId and read ChatMessage
      * when send message if idchat not exit -> call method: "createChat"
      */
     private fun checkChat() {
@@ -90,6 +105,7 @@ class ViewSendMsgFragment : Fragment() {
                         val member = ds.child("member").value.toString()
                         if (partnerUser.uID == member) {
                             chatId = ds.key
+                            readMessage()
                             break
                         }
                     }
@@ -136,18 +152,37 @@ class ViewSendMsgFragment : Fragment() {
             createChat(message)
         } else {
             //ChatNOTE and ChatListNOTE are exit -> add new messages to chatNOTE
-            var dbRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chat").child(chatId!!)
+            var dbRef: DatabaseReference =
+                FirebaseDatabase.getInstance().getReference("Chat").child(chatId!!)
             //add new messages when user click sendMessage
-            val myMessage: Message = Message(appUtil.getUid(), partnerUser.uID, message, type = "text")
+            val myMessage: Message =
+                Message(appUtil.getUid(), partnerUser.uID, message, type = "text")
             dbRef.push().setValue(myMessage)
             //update lastest msg to both user -> use to load itemview in fragmentChat of BtmNvgationBar
             val map: MutableMap<String, Any> = hashMapOf(
                 "lastMessage" to message,
-                "date" to System.currentTimeMillis().toString())
-            dbRef = FirebaseDatabase.getInstance().getReference("ChatList").child(appUtil.getUid()).child(chatId!!)
+                "date" to System.currentTimeMillis().toString()
+            )
+            dbRef = FirebaseDatabase.getInstance().getReference("ChatList").child(appUtil.getUid())
+                .child(chatId!!)
             dbRef.updateChildren(map)
-            dbRef = FirebaseDatabase.getInstance().getReference("ChatList").child(partnerUser.uID).child(chatId!!)
+            dbRef = FirebaseDatabase.getInstance().getReference("ChatList").child(partnerUser.uID)
+                .child(chatId!!)
             dbRef.updateChildren(map)
         }
+    }
+
+    /***
+     * read msg to recyclerview
+     */
+    private fun readMessage() {
+        val query: DatabaseReference =
+            FirebaseDatabase.getInstance().getReference("Chat").child(chatId!!)
+        val option = FirebaseRecyclerOptions.Builder<Message>()
+            .setLifecycleOwner(this).setQuery(query, Message::class.java)
+            .build()
+        query.keepSynced(true)
+        val adapter:ChatfirebaseRecyclerAdapter = ChatfirebaseRecyclerAdapter(option, partnerUser, myUser)
+        binding.rcvMessage.adapter = adapter
     }
 }
