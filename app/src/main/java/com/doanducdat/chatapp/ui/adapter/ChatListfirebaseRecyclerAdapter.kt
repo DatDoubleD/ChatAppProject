@@ -16,7 +16,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class ChatListfirebaseRecyclerAdapter(
-    option: FirebaseRecyclerOptions<ChatList>
+    option: FirebaseRecyclerOptions<ChatList>,
+    private val onItemClickChat:(User) -> Unit
 ) :
     FirebaseRecyclerAdapter<ChatList, ChatListfirebaseRecyclerAdapter.ChatListViewHolder>(option) {
 
@@ -24,8 +25,11 @@ class ChatListfirebaseRecyclerAdapter(
     inner class ChatListViewHolder(private var chatListItemBinding: ChatListItemBinding) :
         RecyclerView.ViewHolder(chatListItemBinding.root) {
 
-        fun onBind(itemOnChatList: ChatListAndInfoPartnerUser) {
+        fun onBind(itemOnChatList: ChatListAndInfoPartnerUser, partnerUser: User) {
             chatListItemBinding.itemOnChatList = itemOnChatList
+            chatListItemBinding.cardViewItemChatList.setOnClickListener {
+                onItemClickChat(partnerUser)
+            }
         }
     }
 
@@ -52,7 +56,7 @@ class ChatListfirebaseRecyclerAdapter(
                         chatList.lastMessage,
                         partnerUser.image,
                         date!!)
-                    holder.onBind(itemOnChatList)
+                    holder.onBind(itemOnChatList, partnerUser)
                 }
             }
 

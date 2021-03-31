@@ -69,6 +69,8 @@
 
                 <ImageView
                     android:id="@+id/img_info"
+                    android:padding="5dp"
+                    android:background="@drawable/bg_click_two_style_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -102,24 +104,30 @@
                 android:layout_height="38dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="5dp"
+                android:padding="5dp"
+                android:background="@drawable/bg_click_two_style_info"
                 android:src="@drawable/ic_msg_add" />
 
             <EditText
                 android:id="@+id/edt_msg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
-                android:layout_marginEnd="3dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
+                android:textSize="14sp"
                 android:background="@drawable/bg_edt_msg"
                 android:hint="@string/WriteYourMsg"
                 android:inputType="textMultiLine"
-                android:padding="8dp"
+                android:padding="5dp"
                 android:scrollbars="vertical"
                 android:textColor="@color/mytext" />
 
             <ImageView
                 android:id="@+id/btn_send"
+                android:padding="5dp"
+                android:background="@drawable/bg_click_two_style_info"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:layout_gravity="center"
