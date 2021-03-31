@@ -55,7 +55,8 @@ class ChatListfirebaseRecyclerAdapter(
                         partnerUser!!.name,
                         chatList.lastMessage,
                         partnerUser.image,
-                        date!!)
+                        date!!,
+                        partnerUser.online)
                     holder.onBind(itemOnChatList, partnerUser)
                 }
             }

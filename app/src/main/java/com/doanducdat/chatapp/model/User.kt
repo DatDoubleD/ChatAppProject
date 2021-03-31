@@ -8,7 +8,9 @@ class User(
     var image: String = "",
     var phone: String = "",
     var birthYear:String = "",
-    var uID:String = ""
+    var uID:String = "",
+    var online:String = "",
+    var typing:String = "false"
 ):Serializable {
 
 }

@@ -1,13 +1,16 @@
 package com.doanducdat.chatapp.ui.fragment.mainapp
 
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentViewSendMsgBinding
@@ -34,6 +37,8 @@ class ViewSendMsgFragment : Fragment() {
     ): View {
         binding = FragmentViewSendMsgBinding.inflate(inflater, container, false)
         getPartnerUserAndMyUser()
+        checkOnlineStatusPartnerUser()
+
         setUpEvent()
         if (chatId == null) {
             checkChat()
@@ -41,6 +46,39 @@ class ViewSendMsgFragment : Fragment() {
         return binding.root
     }
 
+    private fun checkTypingStatus(typing:String){
+        val dbRef = FirebaseDatabase.getInstance().getReference("users").child(myUser.uID)
+        val map:Map<String, Any> = mapOf("typing" to typing)
+        dbRef.updateChildren(map)
+
+    }
+
+    private fun checkOnlineStatusPartnerUser() {
+        val dbRef = FirebaseDatabase.getInstance().getReference("users").child(partnerUser.uID)
+        dbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    var statusOnlineOfPartnerUser = snapshot.child("online").value.toString()
+                    binding.online = statusOnlineOfPartnerUser
+                    //take advantages of datachange listen online status + listen typing status
+                    //when typing save partnerUserID but check -> check with myUserID
+                    //=> purpose is: when i typing, TYPING ANIMATION OF PARTNER_USER WILL SHOW
+                    val typing: String = snapshot.child("typing").value.toString()
+                    if (typing == myUser.uID) {
+                        binding.animTyping.playAnimation()
+                        binding.animTyping.visibility = View.VISIBLE
+                    } else {
+                        binding.animTyping.visibility = View.INVISIBLE
+                        binding.animTyping.cancelAnimation()
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
 
 
     private fun setUpEvent() {
@@ -60,6 +98,24 @@ class ViewSendMsgFragment : Fragment() {
                 sendMessage(message)
             }
         }
+        //check status typign
+        binding.edtMsg.addTextChangedListener (object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (TextUtils.isEmpty(s.toString())){
+                    checkTypingStatus("false")
+                }else{
+                    checkTypingStatus(partnerUser.uID)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     private fun getPartnerUserAndMyUser() {
@@ -168,7 +224,7 @@ class ViewSendMsgFragment : Fragment() {
     }
 
     /***
-     * read msg to recyclerview
+     * read msg to recyclerview, this method called in function checkChat()
      */
     private fun readMessage() {
         val query: DatabaseReference =

@@ -7,6 +7,7 @@ class ChatListAndInfoPartnerUser(
     var name: String= "",
     var lastMessage: String = "",
     var image: String = "",
-    var date: String =""
+    var date: String ="",
+    var online:String ="" //here is status on/offline of partnerUser
 ) : Serializable {
 }

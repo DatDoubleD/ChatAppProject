@@ -7,10 +7,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.ActivityMainBinding
+import com.doanducdat.chatapp.utils.AppUtil
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
+    private val appUtil:AppUtil by lazy { AppUtil() }
     private val navHostFragment by lazy {
         supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
     }
@@ -32,5 +33,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         return
+    }
+
+    override fun onResume() {
+        super.onResume()
+        appUtil.updateOnlineStatus("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        appUtil.updateOnlineStatus("offline")
     }
 }

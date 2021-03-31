@@ -88,12 +88,20 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/anim_typing"
+            android:layout_marginStart="5dp"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            app:lottie_autoPlay="true"
+            android:visibility="invisible"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/typing"
+            />
         <LinearLayout
             android:id="@+id/msgData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:orientation="horizontal"
             android:visibility="visible">

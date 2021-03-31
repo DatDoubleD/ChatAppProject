@@ -11,7 +11,11 @@ class AppUtil {
         return firebaseAuth.uid!!
     }
 
-
+    fun updateOnlineStatus(status:String){
+        val dbRef = FirebaseDatabase.getInstance().getReference("users").child(getUid())
+        val map:Map<String, Any> = mapOf("online" to status)
+        dbRef.updateChildren(map)
+    }
 
 
     companion object {

@@ -38,7 +38,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="bottom|end"
-                    android:src="@drawable/ic_online" />
+                    android:src="@{itemOnChatList.online.equals(`online`)? @drawable/ic_online:@drawable/ic_offline}" />
             </FrameLayout>
 
             <LinearLayout
