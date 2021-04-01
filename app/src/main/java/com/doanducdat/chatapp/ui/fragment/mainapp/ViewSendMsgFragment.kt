@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,10 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.databinding.FragmentViewSendMsgBinding
 import com.doanducdat.chatapp.model.ChatList
@@ -19,15 +24,17 @@ import com.doanducdat.chatapp.model.Message
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.adapter.ChatfirebaseRecyclerAdapter
 import com.doanducdat.chatapp.utils.AppUtil
+import com.doanducdat.chatapp.utils.Appconstants
 import com.doanducdat.chatapp.viewmodel.ProfileViewModel
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.*
+import org.json.JSONObject
 
 
 class ViewSendMsgFragment : Fragment() {
     private lateinit var binding: FragmentViewSendMsgBinding
     private lateinit var partnerUser: User
-    private lateinit var myUser:User
+    private lateinit var myUser: User
     private var chatId: String? = null
     private val appUtil by lazy { AppUtil() }
 
@@ -46,9 +53,9 @@ class ViewSendMsgFragment : Fragment() {
         return binding.root
     }
 
-    private fun checkTypingStatus(typing:String){
+    private fun checkTypingStatus(typing: String) {
         val dbRef = FirebaseDatabase.getInstance().getReference("users").child(myUser.uID)
-        val map:Map<String, Any> = mapOf("typing" to typing)
+        val map: Map<String, Any> = mapOf("typing" to typing)
         dbRef.updateChildren(map)
 
     }
@@ -99,21 +106,20 @@ class ViewSendMsgFragment : Fragment() {
             }
         }
         //check status typign
-        binding.edtMsg.addTextChangedListener (object :TextWatcher{
+        binding.edtMsg.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (TextUtils.isEmpty(s.toString())){
+                if (TextUtils.isEmpty(s.toString())) {
                     checkTypingStatus("false")
-                }else{
+                } else {
                     checkTypingStatus(partnerUser.uID)
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
+
             }
         })
     }
@@ -121,8 +127,13 @@ class ViewSendMsgFragment : Fragment() {
     private fun getPartnerUserAndMyUser() {
         val bundle: Bundle? = arguments
         if (bundle != null) {
-            partnerUser = bundle.getSerializable("PARTNER_USER") as User
-            myUser = bundle.getSerializable("MY_USER") as User
+            if (bundle.get("chatID") != null){ // receive from notificaitno
+                chatId = bundle.get(chatId).toString()
+
+            }else {
+                partnerUser = bundle.getSerializable("PARTNER_USER") as User
+                myUser = bundle.getSerializable("MY_USER") as User
+            }
         }
     }
 
@@ -233,7 +244,69 @@ class ViewSendMsgFragment : Fragment() {
             .setLifecycleOwner(this).setQuery(query, Message::class.java)
             .build()
         query.keepSynced(true)
-        val adapter:ChatfirebaseRecyclerAdapter = ChatfirebaseRecyclerAdapter(option, partnerUser, myUser)
+        val adapter: ChatfirebaseRecyclerAdapter =
+            ChatfirebaseRecyclerAdapter(option, partnerUser, myUser)
         binding.rcvMessage.adapter = adapter
+    }
+
+    //FCM
+    private fun getToken(message: String) {
+        val dbRef = FirebaseDatabase.getInstance().getReference("users").child(partnerUser.uID)
+        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val token = snapshot.child("token").value.toString()
+                    val name = snapshot.child("name").value.toString()
+                    //write notification
+                    val to = JSONObject()
+                    val data = JSONObject()
+                    data.put("partnerUserID", myUser.uID)
+                    data.put("partnerUserImage", myUser.image)
+                    data.put("title", myUser.name)
+                    data.put("message", message)
+                    data.put("chatID", chatId)
+
+                    to.put("to", token)
+                    to.put("data", data)
+                    sendNotification(to)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+    private fun sendNotification(to: JSONObject) {
+        val request: JsonObjectRequest = object : JsonObjectRequest(
+            Method.POST,
+            Appconstants.NOTIFICATION_URL,
+            to,
+            Response.Listener { response: JSONObject ->
+                Log.d("TAG", "sendNotification: $response")
+            },
+            Response.ErrorListener {
+                Log.d("TAG", "sendNotification: $it")
+
+            }) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val map:MutableMap<String, String> = hashMapOf(
+                    "Authorization" to "key=${Appconstants.SERVER_KEY}",
+                "Content_type" to "application/json")
+                return map
+            }
+
+            override fun getBodyContentType(): String {
+                return "application/json"
+            }
+        }
+        val requestQueue = Volley.newRequestQueue(requireContext())
+        request.retryPolicy = DefaultRetryPolicy(
+            30000,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        requestQueue.add(request)
     }
 }

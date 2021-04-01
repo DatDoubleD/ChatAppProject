@@ -14,10 +14,14 @@ import com.doanducdat.chatapp.databinding.FragmentVerifyNumberLoginBinding
 import com.doanducdat.chatapp.model.MyCustomDialog
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.activity.MainActivity
+import com.doanducdat.chatapp.utils.AppUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class VerifyNumberLoginFragment : Fragment() {
@@ -30,7 +34,7 @@ class VerifyNumberLoginFragment : Fragment() {
     private val dialog: MyCustomDialog by lazy { MyCustomDialog(requireActivity()) }
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val db by lazy { FirebaseDatabase.getInstance().reference }
-
+    private val appUtil = AppUtil()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -97,6 +101,18 @@ class VerifyNumberLoginFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    private fun updateTokenUser() {
+
+       FirebaseMessaging.getInstance().token.addOnCompleteListener {
+           if (it.isSuccessful){
+               val token = it.result
+               val dbRef = FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
+               val map:Map<String, Any> = mapOf("token" to token!!)
+               dbRef.updateChildren(map)
+           }
+       }
     }
 
     private fun getID() {

@@ -47,6 +47,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-database:19.7.0'
     implementation 'com.google.firebase:firebase-storage:19.2.1'
+    implementation 'com.google.firebase:firebase-messaging-ktx:21.0.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -97,6 +98,9 @@ dependencies {
     //FirebaseRecyclerAdapter for recyclerview
     implementation 'com.firebaseui:firebase-ui-database:7.1.1'
 
+    //volley + FCM -> send Firebase Cloud Message or Notification
+    implementation 'com.android.volley:volley:1.2.0'
+    implementation 'com.google.firebase:firebase-messaging-ktx:21.0.1'
 
 
 }

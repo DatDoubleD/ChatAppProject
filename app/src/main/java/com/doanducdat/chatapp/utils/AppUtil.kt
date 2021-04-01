@@ -1,11 +1,10 @@
 package com.doanducdat.chatapp.utils
 
-import com.doanducdat.chatapp.model.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class AppUtil {
+
     fun getUid(): String {
         val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
         return firebaseAuth.uid!!
@@ -19,7 +18,7 @@ class AppUtil {
 
 
     companion object {
-
+        //
         private const val SECOND_MILLIS: Int = 1000
         private const val MINUTE_MILLIS: Int = 60 * SECOND_MILLIS
         private const val HOUR_MILLIS: Int = 60 * MINUTE_MILLIS
