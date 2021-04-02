@@ -81,6 +81,9 @@ class VerifyNumberLoginFragment : Fragment() {
             //exit -> login , not exit -> msg: not register
             if (it.exists()) {
                 dialog.stopLoadingDialog()
+                //create token
+                updateTokenUser()
+                //start activity main app
                 startActivity(Intent(requireContext(), MainActivity::class.java))
                 requireActivity().finish()
             } else {

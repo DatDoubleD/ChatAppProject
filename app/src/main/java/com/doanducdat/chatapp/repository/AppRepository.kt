@@ -40,7 +40,6 @@ class AppRepository {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
             }
         })
         return liveData

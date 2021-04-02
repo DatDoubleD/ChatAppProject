@@ -11,6 +11,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.res.ResourcesCompat
 import com.doanducdat.chatapp.R
+import com.doanducdat.chatapp.model.User
+import com.doanducdat.chatapp.ui.activity.HandlerReceiveNotificaitonActivity
 import com.doanducdat.chatapp.ui.fragment.mainapp.ViewSendMsgFragment
 import com.doanducdat.chatapp.utils.AppUtil
 import com.doanducdat.chatapp.utils.Appconstants
@@ -29,19 +31,20 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+
         if (remoteMessage.data.isNotEmpty()) {
+            val map: Map<String, Any> = remoteMessage.data
 
-            val map: Map<String, String> = remoteMessage.data
-
-            val title = map["title"]
-            val message = map["message"]
-            val partnerUserId = map["partnerUserID"]
-            val partnerUserImage = map["partnerUserImage"]
-            val chatId = map["chatID"]
+            val title = map["title"].toString()
+            val message = map["message"].toString()
+            val partnerUser = map["partnerUser"] as User
+            val myUser = map["myUser"] as User
+            val chatId = map["chatID"].toString()
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
-                createOreoNotification(title!!, message!!, partnerUserId!!, partnerUserImage!!, chatId!!)
-            else createNormalNotification(title!!, message!!, partnerUserId!!, partnerUserImage!!, chatId!!)
+                createOreoNotification(title, message, partnerUser,myUser, chatId)
+            else
+                createNormalNotification(title, message, partnerUser,myUser, chatId)
 
         }
 
@@ -59,14 +62,14 @@ class FirebaseNotificationService : FirebaseMessagingService() {
     private fun createNormalNotification(
         title: String,
         message: String,
-        partnerUserId: String,
-        partnerUserImage: String,
+        partnerUser: User,
+        myUser: User,
         chatId: String
     ) {
-        val intent = Intent(this, ViewSendMsgFragment::class.java)
-        intent.putExtra("hisId", partnerUserId)
-        intent.putExtra("hisImage", partnerUserImage)
-        intent.putExtra("chatId", chatId)
+        val intent = Intent(this, HandlerReceiveNotificaitonActivity::class.java)
+        intent.putExtra("PARTNER_USER", partnerUser)
+        intent.putExtra("MY_USER", myUser)
+        intent.putExtra("chatID", chatId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
@@ -83,8 +86,6 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
 
 
-
-
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         manager.notify(Random().nextInt(85 - 65), builder.build())
 
@@ -94,8 +95,8 @@ class FirebaseNotificationService : FirebaseMessagingService() {
     private fun createOreoNotification(
         title: String,
         message: String,
-        partnerUserId: String,
-        partnerUserImage: String,
+        partnerUser: User,
+        myUser: User,
         chatId: String
     ) {
 
@@ -109,10 +110,10 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         channel.enableVibration(true)
         channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
 
-        val intent = Intent(this, ViewSendMsgFragment::class.java)
-        intent.putExtra("hisId", partnerUserId)
-        intent.putExtra("hisImage", partnerUserImage)
-        intent.putExtra("chatId", chatId)
+        val intent = Intent(this, HandlerReceiveNotificaitonActivity::class.java)
+        intent.putExtra("PARTNER_USER", partnerUser)
+        intent.putExtra("MY_USER", myUser)
+        intent.putExtra("chatID", chatId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 

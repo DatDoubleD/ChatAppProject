@@ -82,7 +82,6 @@ class ViewSendMsgFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
             }
         })
     }
@@ -103,6 +102,7 @@ class ViewSendMsgFragment : Fragment() {
                 Toast.makeText(requireContext(), "Enter your msg...", Toast.LENGTH_SHORT).show()
             } else {
                 sendMessage(message)
+                getToken(message)
             }
         }
         //check status typign
@@ -127,12 +127,10 @@ class ViewSendMsgFragment : Fragment() {
     private fun getPartnerUserAndMyUser() {
         val bundle: Bundle? = arguments
         if (bundle != null) {
-            if (bundle.get("chatID") != null){ // receive from notificaitno
-                chatId = bundle.get(chatId).toString()
-
-            }else {
-                partnerUser = bundle.getSerializable("PARTNER_USER") as User
-                myUser = bundle.getSerializable("MY_USER") as User
+            partnerUser = bundle.getSerializable("PARTNER_USER") as User
+            myUser = bundle.getSerializable("MY_USER") as User
+            if (bundle.getString("chatID") != null){
+                chatId = bundle.getString("chatID")
             }
         }
     }
@@ -173,7 +171,6 @@ class ViewSendMsgFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
             }
         })
 
@@ -256,12 +253,11 @@ class ViewSendMsgFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val token = snapshot.child("token").value.toString()
-                    val name = snapshot.child("name").value.toString()
                     //write notification
                     val to = JSONObject()
                     val data = JSONObject()
-                    data.put("partnerUserID", myUser.uID)
-                    data.put("partnerUserImage", myUser.image)
+                    data.put("partnerUser", myUser) //use with CODE "MY_USER" and "PARTNER_USER"
+                    data.put("myUser", partnerUser)
                     data.put("title", myUser.name)
                     data.put("message", message)
                     data.put("chatID", chatId)
@@ -273,7 +269,6 @@ class ViewSendMsgFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
             }
         })
     }
@@ -293,7 +288,7 @@ class ViewSendMsgFragment : Fragment() {
             override fun getHeaders(): MutableMap<String, String> {
                 val map:MutableMap<String, String> = hashMapOf(
                     "Authorization" to "key=${Appconstants.SERVER_KEY}",
-                "Content_type" to "application/json")
+                    "Content_type" to "application/json")
                 return map
             }
 

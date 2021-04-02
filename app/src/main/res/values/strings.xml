@@ -22,6 +22,6 @@
 
     <string name="BirthYear">Birth Year:</string>
     <string name="PhoneNumber">PhoneNumber</string>
-    <string name="WriteYourMsg" >Write your msg</string>
+    <string name="WriteYourMsg">Write your msg</string>
 
 </resources>
