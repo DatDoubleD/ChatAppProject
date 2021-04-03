@@ -37,8 +37,25 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
             val title = map["title"].toString()
             val message = map["message"].toString()
-            val partnerUser = map["partnerUser"] as User
-            val myUser = map["myUser"] as User
+            val partnerUser = User(
+                map["partnerUser_name"].toString(),
+                map["partnerUser_status"].toString(),
+                map["partnerUser_image"].toString(),
+                map["partnerUser_phone"].toString(),
+                map["partnerUser_birthYear"].toString(),
+                map["partnerUser_uID"].toString(),
+                map["partnerUser_online"].toString(),
+            )
+
+            val myUser = User(
+                map["myUser_name"].toString(),
+                map["myUser_status"].toString(),
+                map["myUser_image"].toString(),
+                map["myUser_phone"].toString(),
+                map["myUser_birthYear"].toString(),
+                map["myUser_uID"].toString(),
+                map["myUser_online"].toString(),
+            )
             val chatId = map["chatID"].toString()
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)

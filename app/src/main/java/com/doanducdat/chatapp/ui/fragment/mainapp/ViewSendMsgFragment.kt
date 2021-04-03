@@ -256,8 +256,23 @@ class ViewSendMsgFragment : Fragment() {
                     //write notification
                     val to = JSONObject()
                     val data = JSONObject()
-                    data.put("partnerUser", myUser) //use with CODE "MY_USER" and "PARTNER_USER"
-                    data.put("myUser", partnerUser)
+                    //partnerUser into json -> map in service
+                    data.put("partnerUser_name", myUser.name)
+                    data.put("partnerUser_status", myUser.status)
+                    data.put("partnerUser_image", myUser.image)
+                    data.put("partnerUser_phone", myUser.phone)
+                    data.put("partnerUser_birthYear", myUser.birthYear)
+                    data.put("partnerUser_uID", myUser.uID)
+                    data.put("partnerUser_online", myUser.online)
+                    //myUser into json -> map in service
+                    data.put("myUser_name", partnerUser.name)
+                    data.put("myUser_status", partnerUser.status)
+                    data.put("myUser_image", partnerUser.image)
+                    data.put("myUser_phone", partnerUser.phone)
+                    data.put("myUser_birthYear", partnerUser.birthYear)
+                    data.put("myUser_uID", partnerUser.uID)
+                    data.put("myUser_online", partnerUser.online)
+                    //
                     data.put("title", myUser.name)
                     data.put("message", message)
                     data.put("chatID", chatId)

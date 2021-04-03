@@ -48,14 +48,15 @@ class ChatListfirebaseRecyclerAdapter(
                     //get partnerUser to show: img, name
                     val partnerUser: User? = snapshot.getValue(User::class.java)
                     //show date + last msg + chatId
-                    val date: String? = appUtil.getTimeAgo(chatList.date.toLong())
+                    var date: String? = appUtil.getTimeAgo(chatList.date.toLong())
                     //combine both partnerUser and chatList -> Up to UI chat_list_item.xml
+                    if(date == null) date = ""
                     val itemOnChatList = ChatListAndInfoPartnerUser(
                         chatList.chatId,
                         partnerUser!!.name,
                         chatList.lastMessage,
                         partnerUser.image,
-                        date!!,
+                        date,
                         partnerUser.online)
                     holder.onBind(itemOnChatList, partnerUser)
                 }
