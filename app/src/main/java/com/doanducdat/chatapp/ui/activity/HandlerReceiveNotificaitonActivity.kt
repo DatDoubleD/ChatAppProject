@@ -20,6 +20,7 @@ class HandlerReceiveNotificaitonActivity : AppCompatActivity() {
         val partnerUser: User = intent.getSerializableExtra("PARTNER_USER") as User
         val myUser:User = intent.getSerializableExtra("MY_USER") as User
         val chatID: String? = intent.getStringExtra("chatID")
+
         val bundle: Bundle = bundleOf("PARTNER_USER" to partnerUser, "MY_USER" to myUser, "chatID" to chatID)
 
         val viewSendMsgFragment: ViewSendMsgFragment = ViewSendMsgFragment()

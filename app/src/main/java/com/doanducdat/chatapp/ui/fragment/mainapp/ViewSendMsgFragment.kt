@@ -49,6 +49,8 @@ class ViewSendMsgFragment : Fragment() {
         setUpEvent()
         if (chatId == null) {
             checkChat()
+        }else{
+            readMessage()
         }
         return binding.root
     }

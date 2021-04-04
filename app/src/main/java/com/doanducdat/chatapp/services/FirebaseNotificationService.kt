@@ -4,22 +4,27 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.res.ResourcesCompat
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.doanducdat.chatapp.R
 import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.activity.HandlerReceiveNotificaitonActivity
-import com.doanducdat.chatapp.ui.fragment.mainapp.ViewSendMsgFragment
 import com.doanducdat.chatapp.utils.AppUtil
 import com.doanducdat.chatapp.utils.Appconstants
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.util.*
+
 
 //register service in manifest
 class FirebaseNotificationService : FirebaseMessagingService() {
@@ -59,16 +64,15 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             val chatId = map["chatID"].toString()
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
-                createOreoNotification(title, message, partnerUser,myUser, chatId)
+                createOreoNotification(title, message, partnerUser, myUser, chatId)
             else
-                createNormalNotification(title, message, partnerUser,myUser, chatId)
+                createNormalNotification(title, message, partnerUser, myUser, chatId)
 
         }
 
     }
 
     private fun updateToken(token: String) {
-
         val databaseReference =
             FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUid())
         val map: MutableMap<String, Any> = hashMapOf("token" to token)
@@ -98,7 +102,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setAutoCancel(true)
-            .setColor(ResourcesCompat.getColor(resources, R.color.purple_500, null))
+            .setColor(ResourcesCompat.getColor(resources, R.color.colorOfgetstarted, null))
             .setSound(uri)
             .setContentIntent(pendingIntent)
 
@@ -137,9 +141,9 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         val notification = Notification.Builder(this, Appconstants.CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notify)
             .setAutoCancel(true)
-            .setColor(ResourcesCompat.getColor(resources, R.color.purple_500, null))
+            .setColor(ResourcesCompat.getColor(resources, R.color.colorOfgetstarted, null))
             .setContentIntent(pendingIntent)
             .build()
 
