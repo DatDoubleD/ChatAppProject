@@ -5,14 +5,13 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -25,7 +24,6 @@ import com.doanducdat.chatapp.model.User
 import com.doanducdat.chatapp.ui.adapter.ChatfirebaseRecyclerAdapter
 import com.doanducdat.chatapp.utils.AppUtil
 import com.doanducdat.chatapp.utils.Appconstants
-import com.doanducdat.chatapp.viewmodel.ProfileViewModel
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.*
 import org.json.JSONObject
@@ -37,7 +35,7 @@ class ViewSendMsgFragment : Fragment() {
     private lateinit var myUser: User
     private var chatId: String? = null
     private val appUtil by lazy { AppUtil() }
-
+    private lateinit var adapterMsgReaded:ChatfirebaseRecyclerAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -243,9 +241,22 @@ class ViewSendMsgFragment : Fragment() {
             .setLifecycleOwner(this).setQuery(query, Message::class.java)
             .build()
         query.keepSynced(true)
-        val adapter: ChatfirebaseRecyclerAdapter =
-            ChatfirebaseRecyclerAdapter(option, partnerUser, myUser)
-        binding.rcvMessage.adapter = adapter
+        adapterMsgReaded = ChatfirebaseRecyclerAdapter(option, partnerUser, myUser)
+        binding.rcvMessage.adapter = adapterMsgReaded
+        //just call , adapter will be registered listen
+        scrollToLastPositionRecyclerView()
+    }
+
+    /***
+     * Scroll to last position in recyclerview: ChatFirebaseRecyclerview
+     */
+    private fun scrollToLastPositionRecyclerView(){
+        adapterMsgReaded.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                binding.rcvMessage.scrollToPosition(positionStart)
+            }
+        })
     }
 
     //FCM
@@ -305,7 +316,8 @@ class ViewSendMsgFragment : Fragment() {
             override fun getHeaders(): MutableMap<String, String> {
                 val map:MutableMap<String, String> = hashMapOf(
                     "Authorization" to "key=${Appconstants.SERVER_KEY}",
-                    "Content_type" to "application/json")
+                    "Content_type" to "application/json"
+                )
                 return map
             }
 
