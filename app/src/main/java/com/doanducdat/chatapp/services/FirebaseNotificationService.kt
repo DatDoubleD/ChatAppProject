@@ -63,10 +63,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             )
             val chatId = map["chatID"].toString()
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
-                createOreoNotification(title, message, partnerUser, myUser, chatId)
-            else
-                createNormalNotification(title, message, partnerUser, myUser, chatId)
+            createOreoNotification(title, message, partnerUser, myUser, chatId)
 
         }
 
@@ -80,39 +77,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
     }
 
-    private fun createNormalNotification(
-        title: String,
-        message: String,
-        partnerUser: User,
-        myUser: User,
-        chatId: String
-    ) {
-        val intent = Intent(this, HandlerReceiveNotificaitonActivity::class.java)
-        intent.putExtra("PARTNER_USER", partnerUser)
-        intent.putExtra("MY_USER", myUser)
-        intent.putExtra("chatID", chatId)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
-        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-        val builder = NotificationCompat.Builder(this, Appconstants.CHANNEL_ID)
-        builder.setContentTitle(title)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setAutoCancel(true)
-            .setColor(ResourcesCompat.getColor(resources, R.color.colorOfgetstarted, null))
-            .setSound(uri)
-            .setContentIntent(pendingIntent)
-
-
-        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(Random().nextInt(85 - 65), builder.build())
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createOreoNotification(
         title: String,
         message: String,
@@ -120,35 +85,39 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         myUser: User,
         chatId: String
     ) {
-
-        val channel = NotificationChannel(
-            Appconstants.CHANNEL_ID,
-            "Message",
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        channel.setShowBadge(true)
-        channel.enableLights(true)
-        channel.enableVibration(true)
-        channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-
+        //pending intent
         val intent = Intent(this, HandlerReceiveNotificaitonActivity::class.java)
         intent.putExtra("PARTNER_USER", partnerUser)
         intent.putExtra("MY_USER", myUser)
         intent.putExtra("chatID", chatId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        //sound
+        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        val notification = Notification.Builder(this, Appconstants.CHANNEL_ID)
+        val builder = NotificationCompat.Builder(this, Appconstants.CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(message)
             .setSmallIcon(R.drawable.ic_notify)
             .setAutoCancel(true)
+            .setSound(uri)
             .setColor(ResourcesCompat.getColor(resources, R.color.colorOfgetstarted, null))
             .setContentIntent(pendingIntent)
-            .build()
 
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.createNotificationChannel(channel)
-        manager.notify(100, notification)
+        //chanel
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+            val channel = NotificationChannel(
+                Appconstants.CHANNEL_ID,
+                "Message",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.setShowBadge(true)
+            channel.enableLights(true)
+            channel.enableVibration(true)
+            channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            manager.createNotificationChannel(channel)
+        }
+        manager.notify(100, builder.build())
     }
 }
