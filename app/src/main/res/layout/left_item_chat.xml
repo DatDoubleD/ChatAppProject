@@ -27,7 +27,7 @@
             android:layout_height="25dp"
             android:layout_alignBottom="@+id/leftLayout"
             android:layout_marginStart="2dp"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/avatar"
             app:setAvatar="@{user.image == null? ``:user.image}" />
 
 
@@ -58,7 +58,6 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher_background"
                 app:setImgMsg="@{message}"
                  />
         </LinearLayout>
