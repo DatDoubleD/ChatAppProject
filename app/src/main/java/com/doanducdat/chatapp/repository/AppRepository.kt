@@ -59,8 +59,8 @@ class AppRepository {
         var uploadTask = avatarRef.putBytes(HandleImage.fromBitmap(bitmapResized))
 
         uploadTask.addOnSuccessListener {
-            it.storage.downloadUrl.addOnSuccessListener { uri ->
-                uploadLinkAvatarToUser(uri, result)
+            it.storage.downloadUrl.addOnSuccessListener { url ->
+                uploadLinkAvatarToUser(url, result)
             }
         }
 

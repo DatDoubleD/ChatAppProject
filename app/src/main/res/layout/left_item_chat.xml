@@ -54,11 +54,13 @@
                 android:visibility="@{message.type.equals(`text`)?View.VISIBLE:View.GONE}" />
 
             <ImageView
+                android:visibility="gone"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_launcher_background"
-                android:visibility="@{message.type.equals(`text`)?View.GONE:View.VISIBLE}" />
+                app:setImgMsg="@{message}"
+                 />
         </LinearLayout>
 
     </RelativeLayout>

@@ -37,6 +37,7 @@ class ChatfirebaseRecyclerAdapter(
         fun onBind(message: Message, user: User) {
             viewDataBinding.setVariable(BR.user, user)
             viewDataBinding.setVariable(BR.message, message)
+
         }
     }
 

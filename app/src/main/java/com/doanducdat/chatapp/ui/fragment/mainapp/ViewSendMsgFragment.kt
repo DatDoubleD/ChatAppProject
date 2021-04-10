@@ -1,6 +1,9 @@
 package com.doanducdat.chatapp.ui.fragment.mainapp
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -9,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +26,11 @@ import com.doanducdat.chatapp.databinding.FragmentViewSendMsgBinding
 import com.doanducdat.chatapp.model.ChatList
 import com.doanducdat.chatapp.model.Message
 import com.doanducdat.chatapp.model.User
+import com.doanducdat.chatapp.services.SendMediaService
 import com.doanducdat.chatapp.ui.adapter.ChatfirebaseRecyclerAdapter
 import com.doanducdat.chatapp.utils.AppUtil
 import com.doanducdat.chatapp.utils.Appconstants
+import com.doanducdat.chatapp.utils.CheckPermission
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.*
 import org.json.JSONObject
@@ -105,6 +112,11 @@ class ViewSendMsgFragment : Fragment() {
                 getToken(message)
             }
         }
+        binding.btnDataSend.setOnClickListener {
+            if (CheckPermission.requestPermissionImage(requireActivity(), 100)){
+                pickImage()
+            }
+        }
         //check status typign
         binding.edtMsg.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -122,6 +134,7 @@ class ViewSendMsgFragment : Fragment() {
 
             }
         })
+
     }
 
     private fun getPartnerUserAndMyUser() {
@@ -332,5 +345,42 @@ class ViewSendMsgFragment : Fragment() {
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         requestQueue.add(request)
+    }
+
+
+    //send image
+    private fun pickImage() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select image"), 200)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 200 && resultCode == AppCompatActivity.RESULT_OK && data != null ) {
+
+            var listPickedImgs:ArrayList<String> = arrayListOf()
+
+            if (data.clipData != null){
+                //picked multiple image
+                val imgsNumber:Int = data.clipData!!.itemCount
+
+                for (i in 0 until imgsNumber){
+                    val imgUri = data.clipData!!.getItemAt(i).uri
+                    listPickedImgs.add(imgUri.toString())
+                }
+            }else{
+                listPickedImgs.add(data.data.toString())
+            }
+            val intent = Intent(requireContext(), SendMediaService::class.java)
+            intent.putExtra("partnerUserID", partnerUser.uID)
+            intent.putExtra("chatID", chatId)
+            intent.putStringArrayListExtra("MEDIA", listPickedImgs)
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
+                startForegroundService(requireContext(), intent)
+        }
     }
 }
